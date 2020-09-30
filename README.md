@@ -126,13 +126,14 @@ MINOR, and PATCH versions on each release to indicate any incompatibilities.
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.0 |
+| terraform | >= 0.13.0 |
+| aws | >= 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| aws | >= 3.0 |
 
 ## Inputs
 
