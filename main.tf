@@ -1,8 +1,5 @@
-data "aws_region" "current" {
-}
-
-data "aws_caller_identity" "current" {
-}
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
 
 module "lambda" {
   source                         = "./modules/lambda"
@@ -40,29 +37,6 @@ module "event-cloudwatch" {
   tags                = var.tags
 }
 
-module "event-dynamodb" {
-  source = "./modules/event/dynamodb"
-  enable = lookup(var.event, "type", "") == "dynamodb" ? true : false
-
-  batch_size                   = lookup(var.event, "batch_size", 100)
-  event_source_mapping_enabled = lookup(var.event, "event_source_mapping_enabled", true)
-  function_name                = module.lambda.function_name
-  event_source_arn             = lookup(var.event, "event_source_arn", "")
-  iam_role_name                = module.lambda.role_name
-  starting_position            = lookup(var.event, "starting_position", "TRIM_HORIZON")
-}
-
-module "event-kinesis" {
-  source = "./modules/event/kinesis"
-  enable = lookup(var.event, "type", "") == "kinesis" ? true : false
-
-  batch_size                   = lookup(var.event, "batch_size", 100)
-  event_source_mapping_enabled = lookup(var.event, "event_source_mapping_enabled", true)
-  function_name                = module.lambda.function_name
-  event_source_arn             = lookup(var.event, "event_source_arn", "")
-  iam_role_name                = module.lambda.role_name
-  starting_position            = lookup(var.event, "starting_position", "TRIM_HORIZON")
-}
 
 module "event-s3" {
   source = "./modules/event/s3"
@@ -80,17 +54,6 @@ module "event-sns" {
   endpoint      = module.lambda.arn
   function_name = module.lambda.function_name
   topic_arn     = lookup(var.event, "topic_arn", "")
-}
-
-module "event-sqs" {
-  source = "./modules/event/sqs"
-  enable = lookup(var.event, "type", "") == "sqs" ? true : false
-
-  batch_size                   = lookup(var.event, "batch_size", 10)
-  event_source_mapping_enabled = lookup(var.event, "event_source_mapping_enabled", true)
-  function_name                = module.lambda.function_name
-  event_source_arn             = lookup(var.event, "event_source_arn", "")
-  iam_role_name                = module.lambda.role_name
 }
 
 resource "aws_cloudwatch_log_group" "lambda" {
